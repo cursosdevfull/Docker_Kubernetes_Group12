@@ -1,0 +1,1 @@
+ docker run -d --name server-backend -p 3000:3000 -e DB_HOST=mysql-server -e DB_PORT=3306 -e DB_USER=user -e DB_PASS=12345 -e DB_NAME=db backend

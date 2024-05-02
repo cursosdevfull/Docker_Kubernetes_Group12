@@ -7,7 +7,7 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
-  port: process.env.DB_PORT ? Number(process.env.PORT) : 3306,
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
   user: process.env.DB_USER || "user",
   password: process.env.DB_PASS || "12345",
   database: process.env.DB_NAME || "db",
@@ -22,7 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
-  res.send("All is right");
+  res.send("All is good");
 });
 
 app.get("/create-table", (req, res) => {

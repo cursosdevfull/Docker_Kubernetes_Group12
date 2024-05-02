@@ -28,7 +28,7 @@ function showCustomers(customers) {
 }
 
 function fetchCustomers() {
-  fetch("http://localhost:3000/select")
+  fetch("http://localhost:4000/select")
     .then((res) => res.json())
     .then(showCustomers);
 }
@@ -37,7 +37,7 @@ function addCustomer() {
   const name = inputName.value;
   const email = inputEmail.value;
 
-  fetch("http://localhost:3000/insert", {
+  fetch("http://localhost:4000/insert", {
     method: "post",
     headers: {
       "content-type": "application/json",

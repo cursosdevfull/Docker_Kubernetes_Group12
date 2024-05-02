@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    networks:
+      - net-app
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend
+    container_name: backend
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: mysql-server
+      DB_PORT: 3306
+      DB_USER: user
+      DB_PASS: 12345
+      DB_NAME: db
+      PORT: 4000
+    depends_on:
+      mysql-server:
+        condition: service_healthy
+    networks:
+      - net-app
+
+  mysql-server:
+    image: mysql:8
+    container_name: mysql-server
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 12345
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 3s
+      start_interval: 15s
+      retries: 10
+    networks:
+      - net-app
+
+networks:
+  net-app:
+    driver: bridge
+    name: net-app
