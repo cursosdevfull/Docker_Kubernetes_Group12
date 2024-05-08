@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-dev
+  labels:
+    env: dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-prd
+  labels:
+    env: prd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-frontend
+  namespace: ns-dev
+spec:
+  clusterIP: None
+  selector:
+    env: dev
+    app: frontend
+  ports:
+    - port: 80
+      protocol: TCP
+      name: port-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-set-frontend
+  namespace: ns-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: dev
+      app: frontend
+  template:
+    metadata:
+      namespace: ns-dev
+      labels:
+        env: dev
+        app: frontend
+    spec:
+      containers:
+        - name: server-web
+          image: nginx:alpine
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-frontend
+  namespace: ns-prd
+spec:
+  clusterIP: None
+  selector:
+    env: prd
+    app: frontend
+  ports:
+    - port: 80
+      protocol: TCP
+      name: port-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-set-frontend
+  namespace: ns-prd
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: prd
+      app: frontend
+  template:
+    metadata:
+      labels:
+        env: prd
+        app: frontend
+    spec:
+      containers:
+        - name: server-web
+          image: nginx:alpine

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server-web
+  labels:
+    env: dev
+    app: frontend
+spec:
+  containers:
+    - name: web
+      image: nginx:alpine
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: quality
+  labels:
+    env: dev
+    app: frontend
+spec:
+  containers:
+    - name: devops
+      image: sonarqube:alpine

@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-dev
+  labels:
+    env: dev
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: parameters
+  namespace: ns-dev
+data:
+  api_url: https://dev.midominio.com
+  kafka_url: http://svc-kafka:9000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-set-frontend
+  namespace: ns-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: dev
+      app: frontend
+  template:
+    metadata:
+      namespace: ns-dev
+      labels:
+        env: dev
+        app: frontend
+    spec:
+      containers:
+        - name: server-web
+          image: nginx:alpine
+          env:
+            - name: kafka_brokers_num
+              value: "1"
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: parameters
+                  key: api_url
+            - name: KAFKA_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: parameters
+                  key: kafka_url

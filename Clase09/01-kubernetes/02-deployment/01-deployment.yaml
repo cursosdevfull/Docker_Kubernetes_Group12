@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-set
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: dev
+      app: frontend
+  template:
+    metadata:
+      labels:
+        env: dev
+        app: frontend
+    spec:
+      containers:
+        - name: container01
+          image: python:3.7-alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "echo 'pagina index ejecutada desde python' > index.html && python -m http.server 8082",
+            ]
