@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      env: dev
+      app: frontend
+  template:
+    metadata:
+      labels:
+        env: dev
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-container
+          image: gcr.io/curso-docker10/frontend-ms
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9000
+          env:
+            - name: PORT
+              value: "9000"
+            - name: SERVICE_BACKEND1
+              value: api/message
+          livenessProbe:
+            httpGet:
+              path: "/healthcheck"
+              port: 9000
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: "50Mi"
+              cpu: "0.1"
+            requests:
+              memory: "20Mi"
+              cpu: "0.01"

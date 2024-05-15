@@ -1,0 +1,85 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: grupodocker12.azurecr.io/frontend-ms
+    container_name: frontend-ms
+    ports:
+      - "7000:9000"
+    environment:
+      - PORT=9000
+      - SERVICE_BACKEND1=http://localhost:7001/api/message
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/healthcheck"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+        reservations:
+          cpus: "0.01"
+          memory: 20M
+    networks:
+      - mynet
+
+  backend1:
+    build:
+      context: ./backend1
+      dockerfile: Dockerfile
+    image: grupodocker12.azurecr.io/backend1-ms
+    container_name: backend1-ms
+    ports:
+      - "7001:9001"
+    environment:
+      - PORT=9001
+      - SERVICE_BACKEND2=http://backend2:9002/api/message
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/healthcheck"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+        reservations:
+          cpus: "0.01"
+          memory: 20M
+    networks:
+      - mynet
+
+  backend2:
+    build:
+      context: ./backend2
+      dockerfile: Dockerfile
+    image: grupodocker12.azurecr.io/backend2-ms
+    container_name: backend2-ms
+    environment:
+      - PORT=9002
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/healthcheck"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+        reservations:
+          cpus: "0.01"
+          memory: 20M
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
